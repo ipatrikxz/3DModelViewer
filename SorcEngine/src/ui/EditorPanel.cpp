@@ -5,7 +5,6 @@
 #include "Util.h"
 #include "Scene.h"
 #include "core/Camera.h"
-#include "ProfilerTimeline.h"
 
 #include <functional>
 
@@ -154,44 +153,42 @@ namespace ui
     // performance info
     void EditorPanel::drawPerformanceInfo(ui::Scene& scene)
     {    
-        if (!ImGui::CollapsingHeader("Profiler", ImGuiTreeNodeFlags_DefaultOpen))
-        {
-            return;
-        }
-
         const ImGuiIO& io = ImGui::GetIO();
         float fps = io.Framerate;
         float frameTime = 1.0f / std::max(fps, 0.01f);
 
-		ImGui::PlotHistogram("fps", profilerGraph->fpsHistory.data(), int(profilerGraph->fpsHistory.size()), 0, NULL, 0.0f, 120.0f, ImVec2(200, 80));
-		ImGui::PlotHistogram("frametime", profilerGraph->frameTimeHistory.data(), int(profilerGraph->frameTimeHistory.size()), 0, NULL, 0.0f, 50.0f, ImVec2(200, 80));
+        static const int HISTORY_SIZE = 100;
+        static float fpsHistory[HISTORY_SIZE] = {};
+        static float frameTimeHistory[HISTORY_SIZE] = {};
+        static int offset = 0;
 
-        // Build fake legit::ProfilerTask stream for one frame
-        std::vector<ImGuiUtils::ProfilerTask> tasks;
-        tasks.reserve(16);
+        fpsHistory[offset] = fps;
+        frameTimeHistory[offset] = frameTime;
+        offset = (offset + 1) % HISTORY_SIZE;
 
-        auto emitTask = [&](const char* name, uint32_t color, float startMs, float endMs)
-        {
-            ImGuiUtils::ProfilerTask t; t.name = name; t.color = color; t.startTime = startMs / 1000.0f; t.endTime = endMs / 1000.0f; tasks.push_back(t);
-        };
+        // FPS Graph
+        char fpsOverlay[32];
+        sprintf(fpsOverlay, "FPS: %.1f", fps);
+        ImGui::PlotHistogram("##fps",
+            fpsHistory,
+            HISTORY_SIZE,
+            offset,
+            fpsOverlay,
+			0.0f,   // scale min
+			420.0f, // scale max
+            ImVec2(200, 80));
 
-        float t0 = 0.0f;
-        auto rnd = [](float a, float b){ return a + (b - a) * (rand() % 100) / 100.0f; };
-        float renderMs = rnd(0.1f, 1.1f); if ((rand() % 80) == 0) renderMs += rnd(4.0f, 8.0f);
-        float collideMs = rnd(0.2f, 1.2f);
-        float particleMs = rnd(0.3f, 1.5f);
-        emitTask("Render", IM_COL32( 64,185,255,255), t0, t0 + renderMs); t0 += renderMs;
-        emitTask("Collision", IM_COL32(255,170, 64,255), t0, t0 + collideMs); t0 += collideMs;
-        emitTask("Particle", IM_COL32( 64,220,120,255), t0, t0 + particleMs); t0 += particleMs;
-
-        profilerGraph->LoadFrameData(tasks.data(), tasks.size());
-        profilerGraph->PushPerf(fps, 1000.0f * frameTime);
-
-        int legendWidth = 200;
-        ImVec2 canvas = ImGui::GetContentRegionAvail();
-        int graphWidth = int(canvas.x) - legendWidth;
-        int height = 180;
-        profilerGraph->RenderTimings(graphWidth, legendWidth, height, 0, frameTime);
+        // Frame Time Graph
+        char frameTimeOverlay[32];
+        sprintf(frameTimeOverlay, "Frame Time: %.1f ms", frameTime * 1000);
+        ImGui::PlotHistogram("##frametime",
+            frameTimeHistory,
+            HISTORY_SIZE,
+            offset,
+            frameTimeOverlay,
+			0.0f,   // scale min
+            0.05f,  // scale max
+            ImVec2(200, 80));
     }
 
 }

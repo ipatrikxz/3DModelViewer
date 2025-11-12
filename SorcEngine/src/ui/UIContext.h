@@ -15,7 +15,7 @@ namespace ui
     public:
     
         UIContext();
-        ~UIContext();
+        ~UIContext() {};
 
         bool init(window::RenderWindow& window);
         bool initInput(input::InputManager& inputManager);

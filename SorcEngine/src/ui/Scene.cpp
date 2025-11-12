@@ -21,9 +21,9 @@ namespace ui
 		modelTransform.location = glm::vec3(0.0f, 1.0f, 0.0f);
 		modelTransform.scale = glm::vec3(1.0f, 1.0f, 1.0f);
 
-        loadModel("res/models/Sphere.obj");
+        loadModel("res/models/sphere/Sphere.obj");
         loadTexture("res/textures/wall.jpg");
-        setupFloor();
+        //setupFloor();
     }
 
     void Scene::render() 
@@ -54,13 +54,16 @@ namespace ui
         auto& meshes = activeModel->getMeshes();
         if (meshes.empty()) return;
         
-        auto& mesh = meshes[0];
-        mesh->setTransform(modelTransform);
+        //auto& mesh = meshes[0];
+        //mesh->setTransform(modelTransform);
 
-        // Set up lighting uniforms
+        for (auto& mesh : meshes)
+        {
+			mesh->setTransform(modelTransform);
+        }
+
+		// set up lighting uniforms
         lights.setLightUniforms(*lights.getLightsShader(), camera.get());
-        
-        // Set model transform
         lights.getLightsShader()->setMat4("model", modelTransform.to_mat4());
 
         activeModel->draw(*lights.getLightsShader());

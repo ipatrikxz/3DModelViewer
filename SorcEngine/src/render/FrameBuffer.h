@@ -1,22 +1,30 @@
 #pragma once
 
-#include "RenderBase.h"
+#include <iostream>
 
 namespace render 
 {
-    class FrameBuffer : public IFrameBuffer 
+    class FrameBuffer
     {
 
     public:
 
-        // IFrameBuffer interface
-        void create(int width, int height) override;
-        void bind() override;
-        void unbind() override;
-        void destroy() override;
-        unsigned int getTexture() override;
+		FrameBuffer();
+        void create(int width, int height);
+        void bind();
+        void unbind();
+        void destroy();
+        unsigned int getTexture();
 
         void resize(int width, int height);
+
+    protected:
+
+        unsigned int fbo;
+        unsigned int textureId;
+        unsigned int depthId;
+        int width;
+        int height;
     };
 
 }

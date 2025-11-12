@@ -16,6 +16,7 @@ namespace window
         ~RenderWindow();
 
         bool init(int width, int height, const std::string& title);
+		bool initRenderer();
         void cleanup();
         void swapBuffers();
 

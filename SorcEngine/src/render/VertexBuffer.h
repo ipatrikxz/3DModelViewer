@@ -1,30 +1,35 @@
 #pragma once
 
-#include "RenderBase.h"
-#include <vector>
+#include "util.h"
 
 namespace render 
 {
-    class VertexBuffer : public IVertexBuffer 
+    class VertexBuffer
     {
 
     public:
 
-        // IVertexBuffer interface
-        void create(const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices) override;
-        void destroy() override;
-        void bind() override;
-        void unbind() override;
-        void draw(int indexCount) override;
+        void create(const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices);
+        void destroy();
+        void bind();
+        void unbind();
+        void draw(int indexCount);
 
         // Lazy initialization
         void setVertexData(const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices);
         void ensureInitialized();
 
     private:
+
         std::vector<Vertex> cachedVertices;
         std::vector<unsigned int> cachedIndices;
         bool isInitialized = false;
+
+    protected:
+
+        unsigned int vbo = 0;
+        unsigned int vao = 0;
+        unsigned int ibo = 0;
     };
 
 }

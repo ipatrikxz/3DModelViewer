@@ -4,7 +4,6 @@
 
 #include "window/Window.h"
 #include "input/InputManager.h"
-#include "render/Renderer.h"
 #include "ui/UIContext.h"
 
 namespace app 
@@ -25,7 +24,6 @@ namespace app
     private:
 
         std::unique_ptr<window::RenderWindow> window;
-        std::unique_ptr<render::Renderer> renderer;
 
         // components
         std::unique_ptr<ui::UIContext> uiContext;

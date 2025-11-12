@@ -7,8 +7,16 @@
 
 namespace render 
 {
+    FrameBuffer::FrameBuffer()
+    {
+        fbo = 0;
+        textureId = 0;
+        depthId = 0;
+        width = 0;
+        height = 0;
+    }
 
-    void FrameBuffer::create(int width, int height) 
+    void FrameBuffer::create(int width, int height)
     {
         this->width = width;
         this->height = height;

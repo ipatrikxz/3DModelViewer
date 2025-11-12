@@ -23,8 +23,6 @@ namespace ui
         editorPanel = std::make_unique<EditorPanel>();
     }
 
-    UIContext::~UIContext() = default;
-
     bool UIContext::init(window::RenderWindow& window) 
     {
         IMGUI_CHECKVERSION();
@@ -58,6 +56,14 @@ namespace ui
         return true;
     }
 
+    void UIContext::render()
+    {
+        preRender();
+        viewport->render(*scene);
+        editorPanel->render(*scene);
+        postRender();
+    }
+
     bool UIContext::initInput(input::InputManager& inputManager)
     {
         Camera* camera = getScene()->getCamera();
@@ -78,12 +84,6 @@ namespace ui
         });
 
         return true;
-    }
-
-    void UIContext::render()
-    {
-        viewport->render(*scene);
-        editorPanel->render(*scene);
     }
 
     void UIContext::preRender() 

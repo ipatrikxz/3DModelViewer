@@ -4,13 +4,11 @@
 
 #include "Common.h"
 #include "window/Window.h"
-#include "render/Renderer.h"
 
 namespace app
 {
     Engine::Engine() {
         window = std::make_unique<window::RenderWindow>();
-        renderer = std::make_unique<render::Renderer>();
     }
 
     Engine::~Engine() {
@@ -23,7 +21,7 @@ namespace app
 
 		// Initialize the window and renderer
         if (!window->init(width, height, title)) return false;
-        if (!renderer->init(*window)) return false;
+		if (!window->initRenderer()) return false;
 
 		// Initialize the UI context and input manager
         uiContext = std::make_unique<ui::UIContext>();
@@ -31,7 +29,7 @@ namespace app
 
         if (!uiContext->init(*window)) return false;
 
-		// TODO: Abstract this away from the engine
+		// TODO: Abstract this
         if (!uiContext->initInput(*inputManager)) return false;
 
         return true;
@@ -49,20 +47,13 @@ namespace app
         while (window->getIsRunning())
         {
             float deltaTime = uiContext->getDeltaTime();
-            
+
             // update inputManager
             inputManager->setDeltaTime(deltaTime);
             inputManager->processInput(*window);
 
-            // frame
-            renderer->preRender();
-            
-            // context
-            uiContext->preRender();
+			// render scene
             uiContext->render();
-            uiContext->postRender();
-
-            renderer->postRender();
             
             window->swapBuffers();
             window->processEvents();
@@ -74,7 +65,6 @@ namespace app
     void Engine::shutDown()
     {
         uiContext->destroy();
-        renderer->destroy();
         window->cleanup();
     }
 
