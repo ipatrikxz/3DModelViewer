@@ -2,90 +2,99 @@
 
 #include "Engine.h"
 
-#include "Common.h"
 #include "window/Window.h"
+#include "core/Camera.h"
+#include "scene/Scene.h"
+#include "editor/Editor.h"
+#include "render/Renderer.h"
+#include "input/InputManager.h"
+#include "common.h"
 
 namespace app
 {
-    Engine::Engine() {
-        window = std::make_unique<window::RenderWindow>();
-    }
-
-    Engine::~Engine() {
-        shutDown();
-    }
+    Engine::Engine() = default;
+    Engine::~Engine() = default;
 
     bool Engine::init(int width, int height, const std::string& title)
     {
-        showToastMessage();
+        // Create components
+        _window = std::make_unique<window::RenderWindow>();
+        _renderer = std::make_unique<render::Renderer>();
+        _input = std::make_unique<input::InputManager>();
+        
+        // Initialize window
+        if (!_window->init(width, height, title)) { return false; }
+        if (!_window->initRenderer()) { return false; }
 
-		// Initialize the window and renderer
-        if (!window->init(width, height, title)) return false;
-		if (!window->initRenderer()) return false;
+		// Create scene
+        _scene = std::make_unique<scene::Scene>();
+        _editor = std::make_unique<editor::Editor>();
 
-		// Initialize the UI context and input manager
-        uiContext = std::make_unique<ui::UIContext>();
-        inputManager = std::make_unique<input::InputManager>();
+        // Initialize editor UI
+        if (!_editor->init(_window->getNativeWindow()))
+        {
+            std::cerr << "Failed to initialize editor\n";
+            return false;
+        }
 
-        if (!uiContext->init(*window)) return false;
-
-		// TODO: Abstract this
-        if (!uiContext->initInput(*inputManager)) return false;
+        setupInputBinding();
 
         return true;
     }
 
-    int Engine::run() 
+    int Engine::run()
     {
-
-		// initialize the engine
-        if (!init(SORC_WINDOW_WIDTH, SORC_WINDOW_HEIGHT, "Sorc Engine - Main Window")) 
+        if (!init(APP_WINDOW_WIDTH, APP_WINDOW_HEIGHT, APP_NAME))
         {
             return -1;
         }
 
-        while (window->getIsRunning())
+        // Main loop
+        while (_window->getIsRunning())
         {
-            float deltaTime = uiContext->getDeltaTime();
+            float dt = _editor->getDeltaTime();
 
-            // update inputManager
-            inputManager->setDeltaTime(deltaTime);
-            inputManager->processInput(*window);
+            // Process input
+            _input->setDeltaTime(dt);
+            _input->processInput(*_window);
 
-			// render scene
-            uiContext->render();
-            
-            window->swapBuffers();
-            window->processEvents();
+            // Render UI and scene
+            _editor->beginFrame();
+            _editor->renderUI(*_scene, *_renderer);
+            _editor->endFrame();
+
+            // Swap buffers and poll events
+            _window->swapBuffers();
+            _window->processEvents();
         }
 
         return 0;
     }
 
-    void Engine::shutDown()
+    void Engine::shutdown()
     {
-        uiContext->destroy();
-        window->cleanup();
+        if (_editor) _editor->shutdown();
+        if (_window) _window->cleanup();
     }
 
-    void Engine::showToastMessage()
+    void Engine::setupInputBinding()
     {
-        std::cout << "Welcome to Sorc Engine!\n Version: 1.0.0                  "   << std::endl;
-        std::cout << "-----------------------------------------                 "   << std::endl;
-		std::cout << "Don't you dare go hollow.                                 "   << std::endl;
-        std::cout << "Failure is an illusion.                                   "   << std::endl;
-        std::cout << "You are your own worst enemy.		                        "   << std::endl;
-        std::cout << "-----------------------------------------                 "   << std::endl;
-		std::cout << "I envy you at times, Nomad.                               "   << std::endl;
-		std::cout << "You act in service of survival.                           "   << std::endl;
-		std::cout << "You move with purpose, to protect a fragile existence.    "   << std::endl;
-		std::cout << "Your mind is assaulted by reality,                        "   << std::endl;
-		std::cout << "that you are a mote of dust adrift a desert without end.  "   << std::endl;
-		std::cout << "Yet it shields itself with hope.                          "   << std::endl;
-		std::cout << "A flimsy falsehood that halts the                         "   << std::endl;
-		std::cout << "crashing truth of hopelessness all the same.              "   << std::endl;
-		std::cout << "~ The Maven                                               "   << std::endl;
-        std::cout << "-----------------------------------------                 "   << std::endl;
+        Camera* camera = _scene->getCamera();
+        if (!camera)
+        {
+            std::cerr << "Error: Camera not found during input setup \n";
+            return;
+        }
+
+        // Bind camera movement
+        _input->setMovementDelegate([camera](float dt, const glm::vec3& inputVec) {
+            camera->moveCamera(dt, inputVec);
+        });
+
+        // Bind camera look
+        _input->setMouseLookDelegate([camera](double offsetX, double offsetY) { 
+            camera->lookCamera(offsetX, offsetY); 
+        });
     }
 
 }

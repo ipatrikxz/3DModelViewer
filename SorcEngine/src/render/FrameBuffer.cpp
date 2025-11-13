@@ -69,7 +69,7 @@ namespace render
         create(width, height);
     }
 
-    unsigned int FrameBuffer::getTexture()
+    unsigned int FrameBuffer::getTextureID()
     {
         return textureId;
     }

@@ -4,6 +4,7 @@
 
 namespace render 
 {
+	// VertexBuffer handles VBO, VAO, IBO for a mesh
     class VertexBuffer
     {
 

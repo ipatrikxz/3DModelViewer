@@ -38,7 +38,7 @@ private:
     void processNode(aiNode* node, const aiScene* scene);
     void processMesh(aiMesh* mesh, const aiScene* scene);
 
-
+    std::string filename; 
     std::string directory;
     std::vector<std::shared_ptr<Mesh>> meshes;
     std::vector<Material> materials;  // One material per mesh

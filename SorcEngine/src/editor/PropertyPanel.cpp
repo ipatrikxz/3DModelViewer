@@ -1,109 +1,110 @@
 #pragma once
 
-#include "EditorPanel.h"
+#include "PropertyPanel.h"
 
 #include "Util.h"
-#include "Scene.h"
+#include "scene/Scene.h"
 #include "core/Camera.h"
 
 #include <functional>
 
-namespace ui 
+namespace editor
 {
-    void EditorPanel::render(Scene& scene)
+    // ------------------------------------------------------------------
+	// render the editor panel
+    void PropertyPanel::render(scene::Scene& scene)
     {
         ImGui::Begin("Properties");
-		    drawMeshControls(scene);
-            drawLightControls(scene);
-            drawCameraInfo(scene);
+		drawMeshControls(scene);
+        drawLightControls(scene);
+        drawCameraInfo(scene);
         ImGui::End();
 
         ImGui::Begin("Stats");
-            drawPerformanceInfo(scene);
+        drawPerformanceInfo(scene);
         ImGui::End();
     }
 
     // ------------------------------------------------------------------
     // mesh loading controls
-    void EditorPanel::drawMeshControls(ui::Scene& scene)
+    void PropertyPanel::drawMeshControls(scene::Scene& scene)
     {
-        if (ImGui::CollapsingHeader("Mesh", ImGuiTreeNodeFlags_DefaultOpen))
+        if (ImGui::CollapsingHeader("Model", ImGuiTreeNodeFlags_DefaultOpen))
         {
-            // import Mesh dialog
-            if (ImGui::Button("Open Mesh..."))
+            // import Model dialog
+            if (ImGui::Button("Open Model..."))
             {
-                fileDialog.Open();
+                modelFileDialog.Open();
             }
-
             ImGui::SameLine(0, 5.0f);
-            ImGui::Text(currentFile.c_str());
+            ImGui::Text(currentModelFile.c_str());
 
             // texture file dialog
             if (ImGui::Button("Open Texture..."))
             {
                 textureFileDialog.Open();
             }
-
             ImGui::SameLine(0, 5.0f);
             ImGui::Text(currentTextureFile.c_str());
         }
 
-        // handle mesh file dialog
-        fileDialog.Display();
-        if (fileDialog.HasSelected())
+        // handle model file dialog
+        modelFileDialog.Display();
+        if (modelFileDialog.HasSelected())
         {
-            auto file_path = fileDialog.GetSelected().string();
-            currentFile = file_path.substr(file_path.find_last_of("/\\") + 1);
-            meshLoadCallback(file_path);
-            fileDialog.ClearSelected();
+            auto model_path = modelFileDialog.GetSelected();
+			currentModelFile = model_path.parent_path().filename().string();
+			scene.loadModel(model_path.string());
+            modelFileDialog.ClearSelected();
         }
 
         // handle texture file dialog
         textureFileDialog.Display();
         if (textureFileDialog.HasSelected())
         {
-            auto texture_path = textureFileDialog.GetSelected().string();
-            currentTextureFile = texture_path.substr(texture_path.find_last_of("/\\") + 1);
-            textureLoadCallback(texture_path);
+            auto texture_path = textureFileDialog.GetSelected();
+			currentTextureFile = texture_path.parent_path().filename().string();
+			scene.loadTexture(texture_path.string());
             textureFileDialog.ClearSelected();
         }
     }
 
     // ------------------------------------------------------------------
     // scene lighting controls
-    void EditorPanel::drawLightControls(ui::Scene& scene)
+    void PropertyPanel::drawLightControls(scene::Scene& scene)
     {
         
         if (ImGui::CollapsingHeader("Scene", ImGuiTreeNodeFlags_DefaultOpen))
         {
 
-            // capture reference to directional light
-            DirLight& dirLight = scene.getLights().getDirectionalLight();
-
-            // destruct direction vector
-            float dir[3] = { dirLight.direction.x, dirLight.direction.y, dirLight.direction.z };
+            Lights& lights = scene.getLights();
+            DirLight& dirLight = lights.getDirectionalLight();
 
             ImGui::Separator();
             ImGui::Text("Directional Light");
 
-            if (ImGui::DragFloat3("direction", dir, 0.01f, -1.0f, 1.0f, "%.3f"))
+            // light direction
+            float dir[3] = { dirLight.direction.x, dirLight.direction.y, dirLight.direction.z };
+            if (ImGui::DragFloat3("direction", dir, 0.01f, -1.0f, 1.0f))
             {
                 dirLight.direction = glm::vec3(dir[0], dir[1], dir[2]);
             }
 
-            // Directional Light Color Controls
+			// color ambient
             float ambient[3] = { dirLight.ambient.x, dirLight.ambient.y, dirLight.ambient.z };
             if (ImGui::ColorEdit3("ambient", ambient))
             {
                 dirLight.ambient = glm::vec3(ambient[0], ambient[1], ambient[2]);
             }
 
+            // color diffuse
             float diffuse[3] = { dirLight.diffuse.x, dirLight.diffuse.y, dirLight.diffuse.z };
             if (ImGui::ColorEdit3("diffuse", diffuse))
             {
                 dirLight.diffuse = glm::vec3(diffuse[0], diffuse[1], diffuse[2]);
             }
 
+            // color specular
             float specular[3] = { dirLight.specular.x, dirLight.specular.y, dirLight.specular.z };
             if (ImGui::ColorEdit3("specular", specular))
             {
@@ -112,23 +113,22 @@ namespace ui
 
             ImGui::Separator();
 
-            // Simple Point Light Position Control
+            // point Light
             ImGui::Text("Point Light Position");
-            glm::vec3 pointPos = scene.getLights().getPointLightPosition();
+            glm::vec3 pointPos = lights.getPointLightPosition();
             float pos[3] = { pointPos.x, pointPos.y, pointPos.z };
-            if (ImGui::DragFloat3("position", pos, 0.1f, -10.0f, 10.0f, "%.2f"))
+            if (ImGui::DragFloat3("position", pos, 0.1f, -10.0f, 10.0f))
             {
-                scene.getLights().setPointLightPosition(glm::vec3(pos[0], pos[1], pos[2]));
+                lights.setPointLightPosition(glm::vec3(pos[0], pos[1], pos[2]));
             }
 
             ImGui::Separator();
-
         }
     }
 
     // ------------------------------------------------------------------
     // camera info
-    void EditorPanel::drawCameraInfo(ui::Scene& scene)
+    void PropertyPanel::drawCameraInfo(scene::Scene& scene)
     {
         
         if (ImGui::CollapsingHeader("Camera"))
@@ -151,7 +151,7 @@ namespace ui
 
     // ------------------------------------------------------------------
     // performance info
-    void EditorPanel::drawPerformanceInfo(ui::Scene& scene)
+    void PropertyPanel::drawPerformanceInfo(scene::Scene& scene)
     {    
         const ImGuiIO& io = ImGui::GetIO();
         float fps = io.Framerate;

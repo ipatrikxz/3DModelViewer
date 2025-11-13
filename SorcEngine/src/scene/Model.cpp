@@ -28,10 +28,15 @@ bool Model::load(const std::string& filepath)
     );
 
     directory = std::filesystem::path(filepath).parent_path().string();
-    std::cout << "Loading Model: " << filepath << std::endl;
+	filename = std::filesystem::path(filepath).parent_path().filename().string();
 
+	// Debug logging
+    std::cout << "Loading Model: " << filename << std::endl;
+
+	// Check for errors
     if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
         std::cout << "Failed to load model: " << importer.GetErrorString() << std::endl;
+        std::cout << "|-- Path: " << directory << std::endl;
         return false;
     }
 

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Lights.h"
-#include "object/Shader.h"
+#include "scene/Shader.h"
 #include "core/Camera.h"
 #include <glad/glad.h>
 

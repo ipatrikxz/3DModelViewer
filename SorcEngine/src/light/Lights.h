@@ -12,31 +12,24 @@ public:
     Lights();
     ~Lights();
 
-    // Light management
-    void setDirectionalLight(const DirLight& light);
-    const DirLight& getDirectionalLight() const { return dirLight; }
     DirLight& getDirectionalLight() { return dirLight; }
-    
-    void setPointLightPosition(const glm::vec3& position);
+    const DirLight& getDirectionalLight() const { return dirLight; }
+    float getPointLightConstant() const { return pointLightConstant; }
+    float getPointLightLinear() const { return pointLightLinear; }
+    float getPointLightQuadratic() const { return pointLightQuadratic; }
     const glm::vec3& getPointLightPosition() const { return pointLightPosition; }
-    
-    void setPointLightAmbient(const glm::vec3& ambient) { pointLightAmbient = ambient; }
     const glm::vec3& getPointLightAmbient() const { return pointLightAmbient; }
-    
-    void setPointLightDiffuse(const glm::vec3& diffuse) { pointLightDiffuse = diffuse; }
     const glm::vec3& getPointLightDiffuse() const { return pointLightDiffuse; }
-    
-    void setPointLightSpecular(const glm::vec3& specular) { pointLightSpecular = specular; }
     const glm::vec3& getPointLightSpecular() const { return pointLightSpecular; }
     
+    void setDirectionalLight(const DirLight& light);
+    void setPointLightPosition(const glm::vec3& position);
+    void setPointLightAmbient(const glm::vec3& ambient) { pointLightAmbient = ambient; }
+    void setPointLightDiffuse(const glm::vec3& diffuse) { pointLightDiffuse = diffuse; }
+    void setPointLightSpecular(const glm::vec3& specular) { pointLightSpecular = specular; }
     void setPointLightConstant(float constant) { pointLightConstant = constant; }
-    float getPointLightConstant() const { return pointLightConstant; }
-    
-    void setPointLightLinear(float linear) { pointLightLinear = linear; }
-    float getPointLightLinear() const { return pointLightLinear; }
-    
     void setPointLightQuadratic(float quadratic) { pointLightQuadratic = quadratic; }
-    float getPointLightQuadratic() const { return pointLightQuadratic; }
+    void setPointLightLinear(float linear) { pointLightLinear = linear; }
 
     // Rendering
     void setupShaders();

@@ -21,18 +21,17 @@
 
 enum class WindowedMode { WINDOWED, FULLSCREEN };
 
-// Constants
-#define APP_NAME			"Sorcery Engine"
-#define APP_WINDOW_TITLE	"SorcEngine"
-#define APP_VERSION			"0.0.1"
+// app constants
+#define APP_NAME			"3D Model Viewer"
+#define APP_WINDOW_TITLE	"ModelViewer"
+#define APP_VERSION			"0.0.2"
+#define APP_WINDOW_WIDTH	1920
+#define APP_WINDOW_HEIGHT	720
+#define APP_ASPECT_RATIO	(1980.0f / 1080.0f)
+#define APP_PI				3.141592653589793f
+#define APP_HALF_PI			1.57079632679f
 
-#define SORC_WINDOW_WIDTH	1920
-#define SORC_WINDOW_HEIGHT	720
-#define SORC_ASPECT_RATIO	(1980.0f / 1080.0f)
-#define SORC_PI				3.141592653589793f
-#define SORC_HALF_PI		1.57079632679f
-
-#define UNDEFINED_STRING	"UNDEFINED_STRING"
+// camera
 #define NEAR_PLANE			0.1f
 #define FAR_PLANE			50.0f
 #define FOV					50.0f

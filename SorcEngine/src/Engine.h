@@ -3,8 +3,13 @@
 #include <string>
 
 #include "window/Window.h"
-#include "input/InputManager.h"
-#include "ui/UIContext.h"
+#include <iostream>
+
+namespace window { class RenderWindow; }
+namespace scene { class Scene; }
+namespace render { class Renderer; }
+namespace editor { class Editor; }
+namespace input { class InputManager; }
 
 namespace app 
 {
@@ -17,18 +22,18 @@ namespace app
         ~Engine();
         
         int run();
-		void shutDown();
-
-        void showToastMessage();
 
     private:
 
-        std::unique_ptr<window::RenderWindow> window;
-
-        // components
-        std::unique_ptr<ui::UIContext> uiContext;
-        std::unique_ptr<input::InputManager> inputManager;
-
         bool init(int width, int height, const std::string& title);
+		void shutdown();
+        void setupInputBinding();
+        void showWelcomeMessage();
+
+        std::unique_ptr<window::RenderWindow> _window;
+        std::unique_ptr<scene::Scene> _scene;
+        std::unique_ptr<render::Renderer> _renderer;
+        std::unique_ptr<editor::Editor> _editor;
+        std::unique_ptr<input::InputManager> _input;
     };
 }

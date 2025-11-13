@@ -4,6 +4,7 @@
 
 namespace render 
 {
+    
     class FrameBuffer
     {
 
@@ -14,7 +15,7 @@ namespace render
         void bind();
         void unbind();
         void destroy();
-        unsigned int getTexture();
+        unsigned int getTextureID();
 
         void resize(int width, int height);
 
