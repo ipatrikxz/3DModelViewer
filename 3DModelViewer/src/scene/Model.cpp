@@ -28,7 +28,7 @@ bool Model::load(const std::string& filepath)
     );
 
     directory = std::filesystem::path(filepath).parent_path().string();
-	filename = std::filesystem::path(filepath).parent_path().filename().string();
+	filename = std::filesystem::path(filepath).filename().string();
 
 	// Debug logging
     std::cout << "Loading Model: " << filename << std::endl;

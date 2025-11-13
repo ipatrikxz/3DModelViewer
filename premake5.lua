@@ -1,25 +1,25 @@
-workspace "SorcEngine"
+workspace "3DModelViewer"
     architecture "x64"
     configurations { "Debug", "Release" }
-    startproject "SorcEngine"
+    startproject "3DModelViewer"
 
     -- output directory format
     outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
     -- include directories
     IncludeDir = {}
-    IncludeDir["GLFW"] = 			"%{wks.location}/SorcEngine/vendor/include/GLFW/include"
-    IncludeDir["Glad"] = 			"%{wks.location}/SorcEngine/vendor/include/Glad/include"
-    IncludeDir["glm"] = 			"%{wks.location}/SorcEngine/vendor/include/glm"
-    IncludeDir["stb_image"] = 		"%{wks.location}/SorcEngine/vendor/include/stb_image"
-    IncludeDir["imgui"] = 			"%{wks.location}/SorcEngine/vendor/include/imgui"
-	IncludeDir["imgui_plugins"] = 	"%{wks.location}/SorcEngine/vendor/include/imgui_plugins"
-    IncludeDir["assimp"] =          "%{wks.location}/SorcEngine/vendor/include/assimp"
+    IncludeDir["GLFW"] = 			"%{wks.location}/3DModelViewer/vendor/include/GLFW/include"
+    IncludeDir["Glad"] = 			"%{wks.location}/3DModelViewer/vendor/include/Glad/include"
+    IncludeDir["glm"] = 			"%{wks.location}/3DModelViewer/vendor/include/glm"
+    IncludeDir["stb_image"] = 		"%{wks.location}/3DModelViewer/vendor/include/stb_image"
+    IncludeDir["imgui"] = 			"%{wks.location}/3DModelViewer/vendor/include/imgui"
+	IncludeDir["imgui_plugins"] = 	"%{wks.location}/3DModelViewer/vendor/include/imgui_plugins"
+    IncludeDir["assimp"] =          "%{wks.location}/3DModelViewer/vendor/include/assimp"
 
-	include "SorcEngine/vendor/include/GLFW"
-    include "SorcEngine/vendor/include/Glad"
+	include "3DModelViewer/vendor/include/GLFW"
+    include "3DModelViewer/vendor/include/Glad"
 
-    project "SorcEngine"
+    project "3DModelViewer"
         kind "ConsoleApp"
         language "C++"
         cppdialect "C++20"
@@ -52,8 +52,8 @@ workspace "SorcEngine"
         }
 
         libdirs {
-            "SorcEngine/vendor/lib/assimp",
-            "SorcEngine/vendor/lib/GLFW"
+            "3DModelViewer/vendor/lib/assimp",
+            "3DModelViewer/vendor/lib/GLFW"
         }
 
         -- link libraries
@@ -73,8 +73,8 @@ workspace "SorcEngine"
          -- Copy resources, DLLs, and imgui.ini to output directory
         postbuildcommands {
             "{COPY} \"%{prj.name}/res\" \"%{cfg.targetdir}/res\"",
-            "{COPY} \"%{wks.location}/SorcEngine/vendor/lib/assimp/*.dll\" \"%{cfg.targetdir}\"",
-            "{COPY} \"%{wks.location}/SorcEngine/vendor/include/imgui/imgui.ini\" \"%{cfg.targetdir}\""
+            "{COPY} \"%{wks.location}/3DModelViewer/vendor/lib/assimp/*.dll\" \"%{cfg.targetdir}\"",
+            "{COPY} \"%{wks.location}/3DModelViewer/vendor/include/imgui/imgui.ini\" \"%{cfg.targetdir}\""
         }
 
         debugdir "%{cfg.targetdir}"

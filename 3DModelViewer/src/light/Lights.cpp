@@ -13,7 +13,7 @@ Lights::Lights() {
     dirLight.specular = glm::vec3(0.5f, 0.5f, 0.5f);
 
     // Initialize point light properties
-    pointLightPosition = glm::vec3(2.0f, 2.0f, -2.0f);
+    pointLightPosition = glm::vec3(5.0f, 2.0f, -2.0f);
     pointLightAmbient = glm::vec3(0.1f);
     pointLightDiffuse = glm::vec3(0.5f);
     pointLightSpecular = glm::vec3(1.0f);

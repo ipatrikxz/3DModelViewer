@@ -4,6 +4,7 @@
 
 #include "Util.h"
 #include "stb_image.h"
+#include <filesystem>
 
 Texture::Texture()
     : ID(0), type(TextureType::DIFFUSE)
@@ -17,7 +18,8 @@ bool Texture::load(std::string filepath)
         return false;
     }
 
-    std::cout << "Loading texture: " << filepath << std::endl;
+	std::string name = std::filesystem::path(filepath).filename().string();
+    std::cout << "Loading texture: " << name << std::endl;
 
     glGenTextures(1, &ID);
     glBindTexture(GL_TEXTURE_2D, ID);
