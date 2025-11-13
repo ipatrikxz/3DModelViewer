@@ -1,4 +1,4 @@
-## sorc-engine
+## 3D Model Viewer
 A lightweight 3D model loader and viewer (WIP) built with OpenGL, GLFW, and GLM to explore the 3D rendering pipeline.
 
 ## Features
@@ -10,26 +10,11 @@ A lightweight 3D model loader and viewer (WIP) built with OpenGL, GLFW, and GLM 
 - Basic rendering pipeline
 - ImGui for debug UI
 
-## Libraries
-
-- glad
-- GLFW
-- glm
-- assimp
-- ImGui
-- stb_image
-
 ## Learnings
 
 - OpenGL shader programming and rendering pipeline
 - Implemented camera controls and model loading
 - Integrated ImGui for real-time debugging
-
-## Planned Features
-
-- Improved lighting (PBR, shadows)
-- Texture optimization
-- Model animation support
 
 ## Setup
 
@@ -39,10 +24,20 @@ A lightweight 3D model loader and viewer (WIP) built with OpenGL, GLFW, and GLM 
 - Build and run the project.
 - Note: Work in progress, expect bugs.
 
+## Libs used
+
+- glad
+- GLFW
+- glm
+- assimp
+- ImGui
+- stb_image
+
 ## License
 
 SorcEngine is licensed under the MIT License - see the LICENSE file for details.
 
 ## Screenshots
 
-<img width="720" height="480" alt="image" src="https://github.com/user-attachments/assets/ecfed614-4a91-4bb3-a5e5-c28dd1cf7f07" />
+<img width="720" height="480" alt="image" src="https://github.com/user-attachments/assets/dcc2b863-5ef3-4cf8-a6e5-092dc6a7c562" />
+
